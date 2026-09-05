@@ -17,6 +17,8 @@ workflows:
         script: |
           flutter analyze
           flutter test
+      - name: Apply App Store code signing
+        script: xcode-project use-profiles
       - name: Build signed iOS IPA
         script: flutter build ipa --release --build-number=$BUILD_NUMBER
     artifacts:
