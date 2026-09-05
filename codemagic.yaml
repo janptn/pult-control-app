@@ -20,7 +20,7 @@ workflows:
       - name: Apply App Store code signing
         script: xcode-project use-profiles
       - name: Build signed iOS IPA
-        script: flutter build ipa --release --build-number=$BUILD_NUMBER
+        script: flutter build ipa --release --build-number=$BUILD_NUMBER --export-options-plist=/Users/builder/export_options.plist
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
