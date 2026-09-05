@@ -172,11 +172,11 @@ const _animationPresets = ['reactor', 'comet', 'shockwave', 'rainbow', 'pulse', 
           @override
           Widget build(BuildContext context) {
             final connected = _device != null;
-            return Scaffold(backgroundColor: const Color(0xff070b10), body: SafeArea(child: Column(children: [
-              _Header(connected: connected, text: _headline),
+            return Scaffold(backgroundColor: const Color(0xff070b10), body: Column(children: [
+              SafeArea(bottom: false, child: _Header(connected: connected, text: _headline)),
               Expanded(child: IndexedStack(index: _tab, children: [_connectionTab(connected), _configTab(connected), _systemTab(connected)])),
-              NavigationBar(backgroundColor: const Color(0xff10151b), selectedIndex: _tab, onDestinationSelected: (value) => setState(() => _tab = value), destinations: const [NavigationDestination(icon: Icon(Icons.radar), label: 'Verbindung'), NavigationDestination(icon: Icon(Icons.tune), label: 'Konfiguration'), NavigationDestination(icon: Icon(Icons.memory), label: 'System')] ),
-            ])));
+              Container(color: const Color(0xff10151b), child: SafeArea(top: false, child: NavigationBar(backgroundColor: const Color(0xff10151b), selectedIndex: _tab, onDestinationSelected: (value) => setState(() => _tab = value), destinations: const [NavigationDestination(icon: Icon(Icons.radar), label: 'Verbindung'), NavigationDestination(icon: Icon(Icons.tune), label: 'Konfiguration'), NavigationDestination(icon: Icon(Icons.memory), label: 'System')] ))),
+            ]));
           }
 
           Widget _connectionTab(bool connected) => ListView(padding: const EdgeInsets.all(20), children: [
