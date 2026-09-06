@@ -172,11 +172,36 @@ const _animationPresets = ['reactor', 'comet', 'shockwave', 'rainbow', 'pulse', 
           @override
           Widget build(BuildContext context) {
             final connected = _device != null;
-            return Scaffold(backgroundColor: const Color(0xff070b10), body: Column(children: [
-              SafeArea(bottom: false, child: _Header(connected: connected, text: _headline)),
-              Expanded(child: IndexedStack(index: _tab, children: [_connectionTab(connected), _configTab(connected), _systemTab(connected)])),
-              Container(color: const Color(0xff10151b), child: SafeArea(top: false, child: NavigationBar(backgroundColor: const Color(0xff10151b), selectedIndex: _tab, onDestinationSelected: (value) => setState(() => _tab = value), destinations: const [NavigationDestination(icon: Icon(Icons.radar), label: 'Verbindung'), NavigationDestination(icon: Icon(Icons.tune), label: 'Konfiguration'), NavigationDestination(icon: Icon(Icons.memory), label: 'System')] ))),
-            ]));
+            return Scaffold(
+              backgroundColor: const Color(0xff070b10),
+              body: Column(
+                children: [
+                  _Header(connected: connected, text: _headline),
+                  Expanded(
+                    child: IndexedStack(
+                      index: _tab,
+                      children: [
+                        _connectionTab(connected),
+                        _configTab(connected),
+                        _systemTab(connected),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              bottomNavigationBar: NavigationBar(
+                backgroundColor: const Color(0xff10151b),
+                surfaceTintColor: Colors.transparent,
+                indicatorColor: const Color(0xff64dbff).withValues(alpha: 0.2),
+                selectedIndex: _tab,
+                onDestinationSelected: (value) => setState(() => _tab = value),
+                destinations: const [
+                  NavigationDestination(icon: Icon(Icons.radar), label: 'Verbindung'),
+                  NavigationDestination(icon: Icon(Icons.tune), label: 'Konfiguration'),
+                  NavigationDestination(icon: Icon(Icons.memory), label: 'System'),
+                ],
+              ),
+            );
           }
 
           Widget _connectionTab(bool connected) => ListView(padding: const EdgeInsets.all(20), children: [
@@ -205,7 +230,73 @@ const _animationPresets = ['reactor', 'comet', 'shockwave', 'rainbow', 'pulse', 
           ]);
         }
 
-        class _Header extends StatelessWidget { const _Header({required this.connected, required this.text}); final bool connected; final String text; @override Widget build(BuildContext context) => Container(width: double.infinity, padding: const EdgeInsets.all(18), decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Color(0x33ffbd45))), gradient: LinearGradient(colors: [Color(0xff17110b), Color(0xff070b10)])), child: Row(children: [const Icon(Icons.power_settings_new, color: Color(0xffffbd45), size: 28), const SizedBox(width: 12), Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [const Text('PULT // CONTROL', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 1)), Text(text, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Color(0xff91a6b6), fontSize: 11))])), Container(width: 11, height: 11, decoration: BoxDecoration(color: connected ? const Color(0xff64dbff) : const Color(0xffff6b5e), shape: BoxShape.circle))])); }
+        class _Header extends StatelessWidget {
+          const _Header({required this.connected, required this.text});
+          final bool connected;
+          final String text;
+
+          @override
+          Widget build(BuildContext context) => Container(
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  border: Border(bottom: BorderSide(color: Color(0x33ffbd45))),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Color(0xff18120c), Color(0xff0a0e14)],
+                  ),
+                ),
+                child: SafeArea(
+                  bottom: false,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 14),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.power_settings_new, color: Color(0xffffbd45), size: 28),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'PULT // CONTROL',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                text,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(color: Color(0xff91a6b6), fontSize: 11),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: 12,
+                          height: 12,
+                          decoration: BoxDecoration(
+                            color: connected ? const Color(0xff64dbff) : const Color(0xffff6b5e),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: (connected ? const Color(0xff64dbff) : const Color(0xffff6b5e)).withValues(alpha: 0.6),
+                                blurRadius: 8,
+                                spreadRadius: 1,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+        }
         class _Reactor extends StatelessWidget { const _Reactor({required this.scanning, required this.connected}); final bool scanning, connected; @override Widget build(BuildContext context) => Center(child: Container(width: 190, height: 190, alignment: Alignment.center, decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: const Color(0xffffbd45), width: 2), boxShadow: const [BoxShadow(color: Color(0x66ff9d00), blurRadius: 30)]), child: Container(width: 136, height: 136, alignment: Alignment.center, decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: const Color(0xff64dbff), width: scanning ? 5 : 2)), child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(connected ? Icons.bluetooth_connected : Icons.bluetooth_searching, color: const Color(0xff64dbff), size: 38), const SizedBox(height: 8), Text(connected ? 'ONLINE' : scanning ? 'SCANNING' : 'STANDBY', style: const TextStyle(fontWeight: FontWeight.bold))])))); }
         class _ActionStatus extends StatelessWidget { const _ActionStatus({required this.action, required this.connected}); final String action; final bool connected; @override Widget build(BuildContext context) => Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: const Color(0xff10151b), border: Border.all(color: const Color(0x3364dbff))), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [const Text('LETZTE TASTENAKTION', style: TextStyle(color: Color(0xffffbd45), fontSize: 11)), const SizedBox(height: 6), Text(connected ? action.toUpperCase() : 'NICHT VERBUNDEN', style: const TextStyle(fontSize: 20, color: Color(0xff64dbff), fontWeight: FontWeight.bold))])); }
         class _ClimateStatus extends StatelessWidget { const _ClimateStatus({required this.temperature, required this.humidity, required this.connected}); final String temperature, humidity; final bool connected; @override Widget build(BuildContext context) => Row(children: [_ClimateValue(icon: Icons.thermostat_outlined, label: 'TEMPERATUR', value: connected && temperature != '--' ? '$temperature C' : '--'), const SizedBox(width: 10), _ClimateValue(icon: Icons.water_drop_outlined, label: 'LUFTFEUCHTE', value: connected && humidity != '--' ? '$humidity %' : '--')]); }
